@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { ProductType } from './product-type';
 import { ServiceService } from './service.service';
 
 @Component({
@@ -8,14 +9,25 @@ import { ServiceService } from './service.service';
 })
 export class AppComponent {
   title = 'angular-test-ui';
+  public product_data :Array<ProductType>;
+  public page : number;
+  private pageLimit : number;
+  constructor(public ServiceFile: ServiceService) {
+    this.product_data = [];
+    this.page = 1;
+    this.pageLimit = 15;
+  }
+  displayedColumns: string[] = ['date','face','id','price','size'];
+  
+  ngOnInit() {
+    this.getProduce();
+  }
+  public async getProduce(): Promise<void> {
 
-  constructor(public ServiceFile: ServiceService) {}
-
-  public async getProduce() {
-
-     await this.ServiceFile.getProduce().then((res)=>{
+     await this.ServiceFile.getProduce(this.page,this.pageLimit).then((res)=>{
       res.subscribe(async v => {
-        console.log(v);
+        this.product_data = v;
+        console.log('this.product_data',this.product_data);
       })
     });
    
@@ -24,4 +36,8 @@ export class AppComponent {
     //   // this.data = results.results;
     // })
 }
+public scroll(e):void{
+console.log('e',e)
+}
+
 }

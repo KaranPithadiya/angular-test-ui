@@ -1,0 +1,14 @@
+/* .example-container {
+    overflow-x: scroll;
+} */
+mat-table {
+    width: 100%;
+}
+table {
+    width: 100%;
+}
+.example-table-container {
+    /* position: relative; */
+    max-height: 400px;
+    overflow: auto;
+}
