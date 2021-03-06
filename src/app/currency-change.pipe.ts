@@ -5,9 +5,9 @@ import { Pipe, PipeTransform } from '@angular/core';
 })
 export class CurrencyChangePipe implements PipeTransform {
 
-  transform(value :number): number { 
+  transform(value :number): string { 
     let val = parseFloat((value*0.01).toPrecision(4)); 
-   return val;
+   return '$' + val;
   } 
 
 }

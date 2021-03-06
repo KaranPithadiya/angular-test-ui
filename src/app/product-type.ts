@@ -5,7 +5,3 @@ export interface ProductType {
     face : string,
     date : string
 }
-
-export interface ProductTypeObj {
-    [index: number]: { ProductType: ProductType };
-}
