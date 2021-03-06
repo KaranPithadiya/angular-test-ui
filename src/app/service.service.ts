@@ -13,13 +13,14 @@ export class ServiceService {
   constructor(private http: HttpClient) { 
     
   }
-  public async getProduce(page:number,limit:number) : Promise<Observable<any>>  {
+  public getProduce(page:number,limit:number,sort:string) : Observable<ProductType[]>  {
     try{
       const api = 'http://localhost:3000/products';
-      return this.http.get(api, {
+      return this.http.get<ProductType[]>(api, {
         params: {
           _page: page.toString(),
-          _limit: limit.toString()
+          _limit: limit.toString(),
+          _sort : sort,
         }
       });
 

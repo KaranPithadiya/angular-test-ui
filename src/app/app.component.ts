@@ -1,6 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { ProductType } from './product-type';
 import { ServiceService } from './service.service';
+import {MatSort} from '@angular/material/sort';
+import { MatTableDataSource } from '@angular/material/table';
+
 
 @Component({
   selector: 'app-root',
@@ -9,35 +12,51 @@ import { ServiceService } from './service.service';
 })
 export class AppComponent {
   title = 'angular-test-ui';
+  // @ViewChild(MatSort, { static: false }) set matSort(sort: MatSort)
+  displayedColumns: string[] = ['id','face','price','size','date'];
+  dataSource: MatTableDataSource<ProductType>;
   public product_data :Array<ProductType>;
   public page : number;
-  private pageLimit : number;
+  public pageLimit : number;
+  public isLoadingResults : boolean;
+  public defaultSortCol :string;
+  @ViewChild(MatSort,{ static: false }) sort: MatSort;
+  
+  // dataSource: any[];
+  // displayedColumns: string[];
   constructor(public ServiceFile: ServiceService) {
     this.product_data = [];
     this.page = 1;
     this.pageLimit = 15;
+    this.isLoadingResults = false;
+    this.defaultSortCol = 'size';
+    // this.dataSource = []
   }
-  displayedColumns: string[] = ['date','face','id','price','size'];
   
-  ngOnInit() {
-    this.getProduce();
+   ngOnInit() {
+    this.getProduce(this.page,this.pageLimit,this.defaultSortCol);
   }
-  public async getProduce(): Promise<void> {
 
-     await this.ServiceFile.getProduce(this.page,this.pageLimit).then((res)=>{
-      res.subscribe(async v => {
-        this.product_data = v;
-        console.log('this.product_data',this.product_data);
-      })
+  ngAfterViewInit(){
+    this.sort.sortChange.subscribe((e) => {
+      console.log('e',e)
+      this.getProduce(this.page,this.pageLimit,e.active);
     });
-   
-    // this.Service.getAll().subscribe((results) => {
-    //   console.log('Data is received - Result - ', results);
-    //   // this.data = results.results;
-    // })
+    // this.displayedColumns = ['date','face','id','price','size'];
+    // this.dataSource = new MatTableDataSource(this.product_data);
+  }
+  
+  public getProduce(page,limit,sort): void {
+    this.isLoadingResults = true;
+      this.ServiceFile.getProduce(page,limit,sort).subscribe(v => {
+        this.product_data = v;
+        this.dataSource = new MatTableDataSource(this.product_data);
+        this.dataSource.sort = this.sort;
+        this.isLoadingResults = false;
+        console.log('this.product_data',this.product_data);
+      });
 }
-public scroll(e):void{
-console.log('e',e)
-}
+
+// public sortProduct ()
 
 }
